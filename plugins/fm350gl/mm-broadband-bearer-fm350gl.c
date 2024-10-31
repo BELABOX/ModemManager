@@ -454,10 +454,6 @@ static void ip_config_dns_gw_ready (MMBaseModem *modem, GAsyncResult *res,  GTas
     GError *error = NULL;
     MMBearerConnectResult *connect_result;
 
-    gchar* dns1;
-    gchar* dns2;
-    gchar* dnsv61;
-    gchar* dnsv62;
     const gchar* dns[3] = { 0 };
     const gchar* dnsv6[3] = { 0 };
     GString* s;
@@ -483,38 +479,22 @@ static void ip_config_dns_gw_ready (MMBaseModem *modem, GAsyncResult *res,  GTas
     data = g_strsplit(s->str, ",", -1);
     c= g_strv_length(data);
 
+    if (c<7) { g_task_return_new_error(task, MM_CORE_ERROR, MM_CORE_ERROR_FAILED, "Couldn't match +cgcontrdp reply");   return; }
 
-    if (c<30) { g_task_return_new_error(task, MM_CORE_ERROR, MM_CORE_ERROR_FAILED, "Couldn't match +cgcontrdp reply");   return; }
+    dns[0]=data[5];
+    dns[1]=data[6];
+    if (c >= 30) {
+        gstmp = g_string_new("");
+        deztohexip(data[28], gstmp);
+        dnsv6[0] = gstmp->str;
 
-    dns1=data[5];
-    dns2=data[6];
-    dnsv61=data[28];
-    dnsv62=data[29];
+        gstmp = g_string_new("");
+        deztohexip(data[29], gstmp);
+        dnsv6[1] = gstmp->str;
+    }
     g_free(data);
 
-    gstmp = g_string_new("");
-    deztohexip(dnsv61, gstmp);
-    dnsv61 = gstmp->str;
-
-    gstmp = g_string_new("");
-    deztohexip(dnsv62, gstmp);
-    dnsv62 = gstmp->str;
-
-
-    mm_obj_info (NULL, "dns1: %s",dns1);
-    mm_obj_info (NULL, "dns2: %s",dns2);
-    mm_obj_info (NULL, "dnsv61: %s", dnsv61);
-    mm_obj_info (NULL, "dnsv61: %s", dnsv62);
-
-
-	
-	dns[0]= dns1;
-	dns[1]= dns2;
-
-    dnsv6[0] = dnsv61;
-    dnsv6[1] = dnsv62;
-
-	mm_bearer_ip_config_set_dns(ctx->ipv4_config, (const gchar **) &dns);
+    mm_bearer_ip_config_set_dns(ctx->ipv4_config, (const gchar **) &dns);
     mm_bearer_ip_config_set_dns(ctx->ipv6_config, (const gchar **) &dnsv6);
 
     connect_result = mm_bearer_connect_result_new(mm_base_modem_peek_best_data_port(modem, MM_PORT_TYPE_NET), ctx->ipv4_config, ctx->ipv6_config); 
