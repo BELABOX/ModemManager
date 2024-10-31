@@ -634,6 +634,24 @@ if plugins_options['option']
   }}
 endif
 
+
+# plugin: option fm350gl
+if plugins_options['fm350gl']
+  sources = files(
+    'fm350gl/mm-plugin-fm350gl.c',
+    'fm350gl/mm-broadband-bearer-fm350gl.c',
+    'fm350gl/mm-broadband-modem-fm350gl.c',
+  )
+
+  plugins += {'plugin-fm350gl': {
+    'plugin': true,
+    'module': {'sources': sources, 'include_directories': plugins_incs, 'c_args': '-DMM_MODULE_NAME="fm350gl"'},
+  }}
+plugins_udev_rules += files('fm350gl/77-mm-fm350gl.rules')
+endif
+
+
+
 # plugin: option hso
 if plugins_options['option-hso']
   sources = files(

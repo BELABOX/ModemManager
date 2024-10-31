@@ -1713,6 +1713,32 @@ AM_CFLAGS += -DTESTUDEVRULESDIR_ZTE=\"${srcdir}/zte\"
 endif
 
 ################################################################################
+# plugin: fm350gl
+################################################################################
+
+if ENABLE_PLUGIN_FM350GL
+
+pkglib_LTLIBRARIES += libmm-plugin-fm350gl.la
+libmm_plugin_fm350gl_la_SOURCES = \
+	fm350gl/mm-plugin-fm350gl.c \
+	fm350gl/mm-broadband-modem-fm350gl.h \
+	fm350gl/mm-broadband-modem-fm350gl.c \
+	fm350gl/mm-broadband-bearer-fm350gl.h \
+	fm350gl/mm-broadband-bearer-fm350gl.c \
+	$(NULL)
+libmm_plugin_fm350gl_la_CPPFLAGS = \
+	$(PLUGIN_COMMON_COMPILER_FLAGS) \
+	-DMM_MODULE_NAME=\"fm350gl\" \
+	$(NULL)
+libmm_plugin_fm350gl_la_LDFLAGS = $(PLUGIN_COMMON_LINKER_FLAGS)
+
+dist_udevrules_DATA += fm350gl/77-mm-fm350gl.rules
+
+AM_CFLAGS += -DTESTUDEVRULESDIR_FM350GL=\"${srcdir}/fm350gl\"
+
+endif
+
+################################################################################
 # udev rules tester
 ################################################################################
 

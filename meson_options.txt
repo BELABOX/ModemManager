@@ -86,6 +86,8 @@ option('plugin_x22x', type: 'feature', value: 'auto', description: 'enable x22x 
 # shared_icera
 option('plugin_zte', type: 'feature', value: 'auto', description: 'enable zte plugin support')
 
+option('plugin_fm350gl', type: 'feature', value: 'auto', description: 'enable fm350gl plugin support')
+
 option('introspection', type: 'boolean', value: true, description: 'build introspection support')
 option('vapi', type: 'boolean', value: false, description: 'build vala bindings')
 
