@@ -585,6 +585,7 @@ MM_ENABLE_PLUGIN([wavecom])
 MM_ENABLE_PLUGIN([x22x])
 MM_ENABLE_PLUGIN([zte],
                  [with_shared_icera])
+MM_ENABLE_PLUGIN([fm350gl])
 
 MM_BUILD_SHARED([icera])
 MM_BUILD_SHARED([sierra])
@@ -728,6 +729,7 @@ echo "
       wavecom:                 ${enable_plugin_wavecom}
       x22x:                    ${enable_plugin_x22x}
       zte:                     ${enable_plugin_zte}
+      fm350gl:                 ${enable_plugin_fm350gl}
 
     Miscellaneous:
       gobject introspection:   ${found_introspection}

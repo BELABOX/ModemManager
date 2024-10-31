@@ -339,6 +339,7 @@ plugins_options_reqs = {
   'wavecom': {'available': true, 'shared': []},
   'x22x': {'available': true, 'shared': []},
   'zte': {'available': true, 'shared': ['icera']},
+  'fm350gl': {'available': true, 'shared': []},
 }
 
 plugins_shared = {}
