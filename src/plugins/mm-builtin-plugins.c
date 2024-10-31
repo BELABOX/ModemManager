@@ -109,6 +109,9 @@ MMPlugin *mm_plugin_create_samsung (void);
 #if defined ENABLE_PLUGIN_SIERRA
 MMPlugin *mm_plugin_create_sierra (void);
 #endif
+#if defined ENABLE_PLUGIN_FM350GL
+MMPlugin *mm_plugin_create_fm350gl (void);
+#endif
 #if defined ENABLE_PLUGIN_SIERRA_LEGACY
 MMPlugin *mm_plugin_create_sierra_legacy (void);
 #endif
@@ -237,6 +240,9 @@ mm_builtin_plugins_load (void)
 #endif
 #if defined ENABLE_PLUGIN_SIERRA
     PREPEND_PLUGIN (sierra);
+#endif
+#if defined ENABLE_PLUGIN_FM350GL
+    PREPEND_PLUGIN (fm350gl);
 #endif
 #if defined ENABLE_PLUGIN_SIERRA_LEGACY
     PREPEND_PLUGIN (sierra_legacy);

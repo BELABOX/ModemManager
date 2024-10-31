@@ -102,3 +102,4 @@ option('gtk_doc', type: 'boolean', value: false, description: 'use gtk-doc to bu
 option('bash_completion', type: 'boolean', value: true, description: 'install bash completion files')
 
 option('fuzzer', type: 'boolean', value: false, description: 'build fuzzer tests')
+option('plugin_fm350gl', type: 'feature', value: 'auto', description: 'enable fm350gl plugin support')
