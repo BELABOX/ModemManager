@@ -12,6 +12,9 @@
   LABEL="mm_fm350gl_port_types_vendorcheck"
   SUBSYSTEMS=="usb", ATTRS{bInterfaceNumber}=="?*", ENV{.MM_USBIFNUM}="$attr{bInterfaceNumber}"
 
+  # disable CPOL based features, which make the modem crash
+  ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="712[6-7]", ENV{ID_MM_PREFERRED_NETWORKS_CPOL_DISABLED}="1"
+
   #AT+GTUSBMODE=40 (0e8d:7126)  RNDIS+AT+AP(GNSS)+META+DEBUG+NPT+ADB
   ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="7126", ENV{.MM_USBIFNUM}=="00", SUBSYSTEM=="tty", ENV{ID_MM_PORT_IGNORE}="1"
   ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="7126", ENV{.MM_USBIFNUM}=="01", SUBSYSTEM=="tty", ENV{ID_MM_PORT_IGNORE}="1"
