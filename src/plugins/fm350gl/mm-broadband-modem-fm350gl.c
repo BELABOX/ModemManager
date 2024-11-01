@@ -347,7 +347,7 @@ static void modem_set_current_modes(MMIfaceModem* _self, MMModemMode  allowed, M
 
 static gboolean modem_set_current_modes_finish(MMIfaceModem* self, GAsyncResult* res, GError** error)
 {
-    return g_task_propagate_boolean(G_TASK(res), error);
+    return TRUE;
 }
 
 
