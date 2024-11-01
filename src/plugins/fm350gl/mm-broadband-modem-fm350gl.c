@@ -42,6 +42,7 @@
 static void iface_modem_init (MMIfaceModem *iface);
 static void iface_modem_3gpp_profile_manager_init (MMIfaceModem3gppProfileManager *iface);
 
+static MMIfaceModem *iface_modem_parent;
 
 static void load_supported_modes (MMIfaceModem *self, GAsyncReadyCallback callback, gpointer user_data);
 static GArray * load_supported_modes_finish (MMIfaceModem *self, GAsyncResult *res, GError **error);
@@ -90,12 +91,51 @@ MMBroadbandModemFM350GL *mm_broadband_modem_FM350GL_new (const gchar *device,
                          NULL);
 }
 
+typedef struct {
+    MMIfaceModem *self;
+    GAsyncReadyCallback callback;
+    gpointer user_data;
+} DelayedModemCallback;
 
+static gboolean
+load_current_capabilities (gpointer cbdata)
+{
+    DelayedModemCallback *data = (DelayedModemCallback *)cbdata;
+
+    iface_modem_parent->load_current_capabilities(data->self, data->callback, data->user_data);
+    g_free(data);
+
+    return FALSE;
+}
+
+/*
+  The modem seems to crash if it receives AT+CGMR too soon after being plugged in,
+  so we have to wait for it to settle. The required wait time seems to vary quite
+  significantly between systems, with the highest I found at 2500ms, but out of an
+   abundance of caution, we'll:
+  1) pause at the earliest in the initialization sequence (see mm-iface-modem.c)
+  2) delay for 4000ms instead of only 2500ms
+*/
+static void
+delayed_load_current_capabilities (MMIfaceModem *self,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data)
+{
+    DelayedModemCallback *data = g_new0(DelayedModemCallback, 1);
+    data->self = self;
+    data->callback = callback;
+    data->user_data = user_data;
+
+    g_timeout_add(4000, load_current_capabilities, data);
+}
 
 static void
 
 iface_modem_init (MMIfaceModem *iface)
 {
+    iface_modem_parent = g_type_interface_peek_parent (iface);
+
+    iface->load_current_capabilities = delayed_load_current_capabilities;
     iface->load_supported_modes = load_supported_modes;
     iface->load_supported_modes_finish = load_supported_modes_finish;
     iface->load_current_modes = load_current_modes;
