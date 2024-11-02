@@ -1259,7 +1259,13 @@ mm_3gpp_parse_cops_test_response (const gchar     *reply,
      *       +COPS: (2,"","T-Mobile","31026",0),(1,"AT&T","AT&T","310410"),0)
      */
 
-    r = g_regex_new ("\\((\\d),\"([^\"\\)]*)\",([^,\\)]*),([^,\\)]*)[\\)]?,(\\d)\\)", G_REGEX_UNGREEDY, 0, NULL);
+    /* Quirk: at least some versions of FM350-GL include an additional (unknown)
+     * value between the operator code and the access tech:
+     *
+     *       +COPS: (2,"","EE","23430","609C",7)
+     */
+
+    r = g_regex_new ("\\((\\d),\"([^\"\\)]*)\",([^,\\)]*),([^,\\)]*)[\\)]?,([^,\\)]*,)?(\\d)\\)", G_REGEX_UNGREEDY, 0, NULL);
     g_assert (r);
 
     /* If we didn't get any hits, try the pre-UMTS format match */
@@ -1312,7 +1318,7 @@ mm_3gpp_parse_cops_test_response (const gchar     *reply,
         /* Only try for access technology with UMTS-format matches.
          * If none give, assume GSM */
         tmp = (umts_format ?
-               mm_get_string_unquoted_from_match_info (match_info, 5) :
+               mm_get_string_unquoted_from_match_info (match_info, 6) :
                NULL);
         info->access_tech = (tmp ?
                              parse_access_tech (tmp, log_object) :
