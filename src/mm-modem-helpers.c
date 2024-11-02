@@ -1212,7 +1212,13 @@ mm_3gpp_parse_cops_test_response (const gchar     *reply,
      *       +COPS: (2,"","T-Mobile","31026",0),(1,"AT&T","AT&T","310410"),0)
      */
 
-    r = g_regex_new ("\\((\\d),\"([^\"\\)]*)\",([^,\\)]*),([^,\\)]*)[\\)]?,(\\d+)\\)", G_REGEX_UNGREEDY, 0, NULL);
+    /* Quirk: at least some versions of FM350-GL include an additional (unknown)
+     * value between the operator code and the access tech:
+     *
+     *       +COPS: (2,"","EE","23430","609C",7)
+     */
+
+    r = g_regex_new ("\\((\\d),\"([^\"\\)]*)\",([^,\\)]*),([^,\\)]*)[\\)]?,([^,\\)]*,)?(\\d+)\\)", G_REGEX_UNGREEDY, 0, NULL);
     g_assert (r);
 
     /* If we didn't get any hits, try the pre-UMTS format match */
@@ -1267,7 +1273,7 @@ mm_3gpp_parse_cops_test_response (const gchar     *reply,
             guint act_value = 0;
 
             /* the regex makes sure this is a number, it won't fail */
-            mm_get_uint_from_match_info (match_info, 5, &act_value);
+            mm_get_uint_from_match_info (match_info, 6, &act_value);
             info->access_tech = get_mm_access_tech_from_etsi_access_tech (act_value, log_object);
         } else
             info->access_tech = MM_MODEM_ACCESS_TECHNOLOGY_GSM;
