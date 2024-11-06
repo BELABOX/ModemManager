@@ -287,6 +287,12 @@ load_current_modes_finish (MMIfaceModem *self,
         if (g_ascii_strcasecmp(data[0], "17") == 0) { *allowed = MM_MODEM_MODE_4G | MM_MODEM_MODE_5G; }
         if (g_ascii_strcasecmp(data[0], "20") == 0) { *allowed = MM_MODEM_MODE_3G | MM_MODEM_MODE_4G |MM_MODEM_MODE_5G; }
 
+        /*
+          Ignore PreferredAct1 if a single mode is supported, to match our supported_modes
+          In practice, we've seen a modem returning +GTACT: 2,3,[...] after being sent AT+GTACT=2
+         */
+        if (*allowed == MM_MODEM_MODE_3G || *allowed == MM_MODEM_MODE_4G || *allowed == MM_MODEM_MODE_5G) return TRUE;
+
         if (g_ascii_strcasecmp(data[1], "2") == 0) { *preferred = MM_MODEM_MODE_3G; }
         if (g_ascii_strcasecmp(data[1], "3") == 0) { *preferred = MM_MODEM_MODE_4G; }
         if (g_ascii_strcasecmp(data[1], "6") == 0) { *preferred = MM_MODEM_MODE_5G; }
